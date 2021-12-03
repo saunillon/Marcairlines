@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Flights details :  {{ flight.number }} ({{flight.departure_day}}-{{flight.departure_time}})</h1>
+
+  <h5> Additional information : </h5>
+  <p><strong>Destination:</strong> {{ flight.connection_id.arrival_airport_id }} </p>
+  <p><strong>Departure:</strong> {{ flight.connection_id.departure_airport_id }} </p>
+  <p><strong>Airplane:</strong> {{ flight.airplane_id }}</p>
+
+  <p><strong>Departure Gate:</strong> not yet specified </p>
+  <p><strong>Boarding time:</strong> {{flight.departure_time}} </p>
+
+
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Workers</h4>
+    <p><strong>Pilot:</strong> {{ flight.connection_id.pilot_id }}</p>
+    <p><strong>Copilot:</strong> {{ flight.connection_id.optionnal_pilot_id }}</p>
+    <p><strong>Crew members:</strong> {{ flight.connection_id.first_crew_member_id }},{{ flight.connection_id.first_crew_member_id }}</p>
+    <p><strong>Remaining seats:</strong> {{ departure.number_of_empty_seat }}</p>
+  </div>
+{% endblock %}

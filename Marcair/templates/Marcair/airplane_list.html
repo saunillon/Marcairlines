@@ -1,0 +1,12 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Airplane around the world</h1>
+  <ul>
+    {% for airplane in airplane_list %}
+      <li>
+        <a href="{{ airplane.get_absolute_url }}">{{ airplane.type }}</a> ({{airplane.immatriculation}})
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Airports around the world</h1>
+  <ul>
+    {% for airport in airport_list %}
+      <li>
+        <a href="{{ airport.get_absolute_url }}">{{ airport.airport_name }}</a> ({{airport.code}})
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Departure details :  {{ departure.id }}</h1>
+
+  <p><strong>Flight associated:</strong> {{ departure.flight_id.connection_id }} </p>
+  <p><strong>Remaining seats:</strong> {{ departure.number_of_empty_seat }}</p>
+  <p><strong>Gate:</strong> not specified </p>
+
+
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Workers</h4>
+    <p><strong>Remaining seats:</strong> {{ departure.number_of_empty_seat }}</p>
+    <p><strong>Remaining seats:</strong> {{ departure.number_of_empty_seat }}</p>
+    <p><strong>Remaining seats:</strong> {{ departure.number_of_empty_seat }}</p>
+    <p><strong>Remaining seats:</strong> {{ departure.number_of_empty_seat }}</p>
+  </div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Departure List</h1>
+  {% if departure_list %}
+  <ul>
+    {% for departure in departure_list %}
+      <li>
+        <a href="{{ departure.get_absolute_url }}">{{ departure.id }}</a> 
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no departures programmed.</p>
+  {% endif %}
+{% endblock %}

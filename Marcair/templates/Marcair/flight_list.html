@@ -1,0 +1,12 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Flights programmed</h1>
+  <ul>
+    {% for flight in flight_list %}
+      <li>
+        <a href="{{ flight.get_absolute_url }}">{{ flight.flight_number }}</a> ({{flight.departure_day}}-{{flight.departure_time}} -- {{flight.arrival_day}}-{{flight.arrival_time}})
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

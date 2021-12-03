@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Personal Data</h1>
+  <p> 
+    {% if user.is_authenticated %}
+        Welcome {{ user.get_username }} 
+    <a href="{% url 'logout'%}?next={{request.path}}">Logout</a>
+      {% else %}
+        Welcome Anonymous
+    {% endif %}
+      Thank you for your trust 
+    <a href="{% url 'homepage'%}"> Back Home</a>
+  </p>
+
+  <p>Your profil</p>
+  <ul>
+    <li><strong>Flights:</strong> {{ num_flights }}</li>
+    <li><strong>Departures:</strong> {{ num_departures }}</li>
+    <li><strong>Airports:</strong> {{ num_airports }}</li>
+  </ul>
+{% endblock %}
