@@ -22,17 +22,12 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-]
-
-urlpatterns += [
-    path('Marc-airlines/', include('Marcair.urls'))
-]
-
-#Add URL maps to redirect the base URL to our application
-
-urlpatterns += [
+    path('Marc-airlines/', include('Marcair.urls')),
     path('', RedirectView.as_view(url='/Marc-airlines/', permanent=True)),
-]
+    ]
+
+
+
 
 # Use static() to add url mapping to serve static files during development (only)
 

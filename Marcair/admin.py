@@ -1,6 +1,8 @@
 from django.contrib import admin
 
 from Marcair.models import Airport, Airplane, Employee, Connection, Pilot, Transaction, Departure, Flight, Ticket, CrewMember, Client
+# CustomUser
+
 
 # admin.site.register(Airport)
 # admin.site.register(Airplane)
@@ -55,6 +57,10 @@ class DepartureAdmin(admin.ModelAdmin):
     list_display = ('id', 'flight_id', 'pilot_id', 'optional_pilot_id', 'first_crew_member_id', 'second_crew_member_id','number_of_empty_seat','number_of_reserved_seat')
     fields = ['flight_id', ('pilot_id', 'optional_pilot_id'), ('first_crew_member_id','second_crew_member_id'),('number_of_empty_seat','number_of_reserved_seat')]
 
+# class CustomUserAdmin(admin.ModelAdmin):
+#     list_display = ('last_name', 'first_name', 'adress')
+#     fields = ['last_name', 'first_name','adress']
+
 # Register the admin class with the associated model
 admin.site.register(Pilot, PilotAdmin)
 admin.site.register(Employee, EmployeeAdmin)
@@ -66,4 +72,5 @@ admin.site.register(Airplane, AirplaneAdmin)
 admin.site.register(Transaction, TransactionAdmin)
 admin.site.register(Ticket, TicketAdmin)
 admin.site.register(Client, ClientAdmin)
+# admin.site.register(CustomUser, CustomUserAdmin)
 

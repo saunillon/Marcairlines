@@ -1,49 +1,58 @@
+
+# import of the necessary extensions
 import datetime
-from django.views import generic
-from django.shortcuts import get_object_or_404 
-from django.contrib.auth.mixins import LoginRequiredMixin
+import io
+import os
+import random
+from abc import ABC
+from django.views import generic 
+from django.shortcuts import render, reverse, redirect
+from django.utils.http import urlencode
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, Http404, FileResponse
 from django.core.mail import send_mail
-from django.shortcuts import reverse
+from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator, EmptyPage
+from django.contrib import messages
+from django import forms
+from django.templatetags.static import static
+from django.urls import reverse_lazy, reverse
+from django.views.generic import CreateView, ListView, DetailView, UpdateView
+from django.db.models import Lookup
+from django.contrib.auth.forms import UserCreationForm
 
-from .forms import Buy_a_ticket_Form, IdentityForm
+# import the forms and the models created
+from .forms import  FlightForm, ResearchForm
+from Marcair.models import Airport, Flight, Departure, Ticket, Connection, Transaction, Pilot, Employee, CrewMember, Airplane, Client 
+# CustomUser
+# SignupForm,
 
-# Create your views here.
-from Marcair.models import Airport, Flight, Departure, Ticket, Connection, Transaction, Pilot, Employee, CrewMember, Airplane, Client
+# creation of the views
 
 def index(request):
     """View function for home page of site."""
-
     # Generate counts of some of the main objects
     num_flights = Flight.objects.all().count()
     num_departures = Departure.objects.all().count()
     num_airports = Airport.objects.all().count()
-    num_flights2 = Flight.objects.raw('SELECT COUNT(*) FROM Flight;')
-    num_departures2 = Departure.objects.raw('SELECT COUNT(*) FROM Departure;')
-    num_airports2 = Airport.objects.raw('SELECT COUNT(*) FROM Airport;')
-
-
     # Available books (status = 'a')
     num_seat_available = Departure.objects.filter(number_of_empty_seat__exact='0').count()
-
     # The 'all()' is implied by default.
     num_pilots = Pilot.objects.count()
-
-    context = {
+    context = {"date": datetime.date.today(),
         'num_flights': num_flights,
         'num_departures': num_departures,
         'num_airports': num_airports,
-        'num_flights2': num_flights2,
-        'num_departures2': num_departures2,
-        'num_airports2': num_airports2,
         'num_seat_available': num_seat_available,
-        'num_pilots': num_pilots,
-    }
-
-    # Render the HTML template index.html with the data in the context variable
-    return render(request, 'index.html', context=context)
+        'num_pilots': num_pilots,}
+    try:
+        context["user_name"] = request.user.first_name
+    except AttributeError:
+        context["user_nom"] = ""
+    return render(request, "index.html", context=context)
 
 def about_us(request):
     """View function for information of site."""
@@ -51,6 +60,15 @@ def about_us(request):
     # Render the HTML template about_us.html with the data in the context variable
     return render(request, 'about_us.html', context=context)
 
+def register(request):
+    if request.method=="POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    return render(request,'register.html',{'form':form})
 
 def client_access(request):
     """View function for information of site."""
@@ -90,51 +108,54 @@ class AirplaneDetailView(generic.DetailView):
 
 def get_flight(request):
     """View function for information of site."""
+    if request.method=="POST":
+        form = ResearchForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Marcairbuying.html')
+    else:
+        form = ResearchForm()
+        
+    return render(request,'Marcair/buying.html',{'form':form})
     context= {
-        'listofflights':Flight.objects.raw('SELECT * FROM Flight')
+        
     }
     # Render the HTML template about_us.html with the data in the context variable
     return render(request, 'Marcair/buying.html', context=context)
 
-def get_identity(request):
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = IdentityForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            return HttpResponseRedirect("{% url 'login'%}")
 
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = IdentityForm(request.GET)
+class TicketDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = Ticket
+    template_name = "detail-ticket.html"
+    # context_object_name = ""
+    def test_func(self):
+        ticket = Ticket.objects.get(pk=self.kwargs["pk"])
+        return self.request.user.id == Ticket.client_id
 
-    return render(request, 'Marcair/account_created.html', {'form': form})
+class TicketReservations(LoginRequiredMixin, ListView):
+    model = Ticket
+    template_name = "ticket_list.html"
+    # paginate_by = 2
+    permission_denied_message = "Please connect to see your tickets"
+    def get_queryset(self):
+        return Ticket.objects.filter(user=self.request.user).order_by("date_time_of_issue")
 
-def book_a_flight(request, pk):
-    booking=get_object_or_404(Flight, pk = pk)
+    def get_context_data(self, ** kwargs):
+        context = super().get_context_data(**kwargs)
+        queries = self.get_queryset()
+        # context["old_reservations"] = queries.exclude(trajet__date_depart__gt =datetime.date.today())
+        # context["new_reservations"] = queries.filter(trajet__date_depart__gt =datetime.date.today())
+        return context
 
-    # If this is a POST request then process the Form data
-    if request.method == 'POST':
-
-        # Create a form instance and populate it with data from the request (binding):
-        form = Buy_a_ticket_Form(request.POST)
-
-        # Check if the form is valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
-            booking.due_back = form.cleaned_data['renewal_date']
-            booking.save()
-
-            # redirect to a new URL:
-            return HttpResponseRedirect(reverse('/') )
-
-    # If this is a GET (or any other method) create the default form.
-    else:
-        proposed_renewal_date = datetime.date.today() + datetime.timedelta(weeks=3)
-        form = Buy_a_ticket_Form(initial={'renewal_date': proposed_renewal_date,})
-
-    return render(request, 'Marcair/buying.html', {'form': form, 'booking':booking})
+class Buy_Ticket(LoginRequiredMixin, CreateView):
+    model = Ticket
+    template_name = "buying.html"
+    personne = forms.SelectMultiple()
+    fields = (
+        'flight',
+        'place',
+    )
+    widgets = {
+        'trajet': forms.Textarea(attrs={'readonly': 'readonly'})
+    }
+    permission_denied_message = "Please connect to book a flight"

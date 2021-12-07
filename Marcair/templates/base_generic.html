@@ -43,7 +43,7 @@
               {% else %}
                 <li><a class="dropdown-item" href="{% url 'login'%}?next={{request.path}}">Login</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{% url 'client_account'%}">Not a client yet?</a><li>
+                <li><a class="dropdown-item" href="{% url 'register'%}">Not a client yet?</a><li>
               {% endif %}
             </ul>
           </li>
@@ -72,7 +72,7 @@
     </div>
   </nav>
 
-  <div>
+  <div style="padding:0.5em">
     {% block content %}
     {% endblock %}
   </div>

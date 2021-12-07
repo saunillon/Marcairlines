@@ -1,43 +1,43 @@
 {% extends "base_generic.html" %}
 
-{% block content %}
-  <p>    
+{% block content %}  
+<p>    
     {% if user.is_authenticated%} 
-      <h4>Your personal Data</h4>
-      <ul>
-        <li><strong>FullName</strong> {{ client.first_name }} {{ client.last_name }}</li>
-        <li><strong>Adress</strong> {{ client.adress }}</li>
-        <li><strong>Reservations</strong> {{ num_airports }}</li>
-      </ul>
+    <div class="container mg-t">
+      <h4>My account</h4>
+      <div class="row">
+        <h7>
+            Username : {{user.username}}
+        </h7>
+          <h7>
+            Last_name : {{ user.last_name }}
+          </h7>
+      </div>
+      <div class="row">
+          <h7>
+              First_name : {{ user.first_name }}
+          </h7>
+      </div>
+      <div class="row">
+          <h7>
+              Email : {{ user.email }}
+          </h7>
+      </div>
+      <div class="row">
+        <h7>
+             My transactions : (soon available) 
+        </h7>
+        </div>
+      <br>
+
+      <a class="btn btn-primary btn-lg btn-block" href="{% url 'password_reset' %}">Change password</a>
+      {% comment %} <a class="btn btn-secondary btn-lg btn-block" href="{% url 'update-profile' pk=user.id %}">Edit my profil</a> {% endcomment %}
+  </div>
+
 
     {% else %}
-    <h4> Not registered </h4>
-    <p> To see your personal user data, please <a href="{% url 'login'%}?next={{request.path}}">Login</a> or fill in the form and contact an admin user at <a href="mailto:MarcAirlines@feedbqcks.com">MarcAirlines@feedbacks.com</a> to get an access</p>
-      <form action="{% url 'homepage' %}" method="post">
-        <label for="First_name">First Name: 
-          <input id="first_name" type="text" name="first_name" value="{{ First_name }}">
-        </label> 
-        <br>
-        <label for="Last_name">Last Name: 
-          <input id="last_name" type="text" name="last_name" value="{{ Last_name }}">
-        </label>
-        <br>
-        <label for="Adress">Adress Name:
-          <input id="adress" type="text" name="adress" value="{{ Adress }}"> 
-        </label>
-        <br>
-        <label for="Email">Email adress: 
-          <input id="email_adress" type="text" name="email_adress" value="{{ Email_adress }}">
-        </label>
-        <br>
-        <label for="Group">User category: 
-          <input id="group" type="text" name="group" value="{{ Group }}">
-        </label> 
-        <br>
-        {% csrf_token %}
-        {{ form }}
-        <button class="btn btn-primary" type="submit" value="Submit" role="button" href="{% url 'homepage' %}">Submit </button>
-    </form>
+    <h4> Not connected </h4>
+    <p> To see your personal user data, please <a href="{% url 'login'%}?next={{request.path}}">Login</a> or create an account <a href="{% url 'account_creation'%}"> HERE </
 
     {% endif%}
 

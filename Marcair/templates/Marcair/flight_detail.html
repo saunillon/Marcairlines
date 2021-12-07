@@ -11,12 +11,4 @@
   <p><strong>Departure Gate:</strong> not yet specified </p>
   <p><strong>Boarding time:</strong> {{flight.departure_time}} </p>
 
-
-  <div style="margin-left:20px;margin-top:20px">
-    <h4>Workers</h4>
-    <p><strong>Pilot:</strong> {{ flight.connection_id.pilot_id }}</p>
-    <p><strong>Copilot:</strong> {{ flight.connection_id.optionnal_pilot_id }}</p>
-    <p><strong>Crew members:</strong> {{ flight.connection_id.first_crew_member_id }},{{ flight.connection_id.first_crew_member_id }}</p>
-    <p><strong>Remaining seats:</strong> {{ departure.number_of_empty_seat }}</p>
-  </div>
 {% endblock %}

@@ -1,8 +1,8 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h4>Marc Airlines homepage</h4>
-  <p>Welcome to Marc Airlines, website developed by <em>V6Airplanes</em>!</p>
+  <h6>Welcome to Marc Airlines</h6>
+  
   <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel" >
     <div class="carousel-indicators">
       <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -10,7 +10,7 @@
       <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
     </div>
     <div class="carousel-inner" >
-      <div class="carousel-item active" data-bs-interval="5000">
+      <div class="carousel-item active" data-bs-interval="3000">
         {% load static %}
         <img src="{% static 'images/airplane1.PNG' %}" class="d-block w-100">
         <div class="carousel-caption d-md-block">
@@ -18,7 +18,7 @@
           <p>learn more about us and our offers</p>
         </div>
       </div>
-      <div class="carousel-item" data-bs-interval="5000">
+      <div class="carousel-item" data-bs-interval="3000">
         {% load static %}
         <img src="{% static 'images/destination.PNG' %}" class="d-block w-100">
         <div class="carousel-caption d-md-block">
@@ -26,7 +26,7 @@
           <p>Don't waste time, book a flight</p>
         </div>
       </div>
-      <div class="carousel-item" data-bs-interval="5000">
+      <div class="carousel-item" data-bs-interval="3000">
         {% load static %} 
         <img src="{% static 'images/infrastructure.PNG' %}" class="d-block w-100">
         <div class="carousel-caption d-md-block">
@@ -45,8 +45,7 @@
     </button>
   </div>
   
-  <h2>Contenu dynamique</h2>
-  <p>You'll find the following data:</p>
+  <p>Live data :</p>
   <ul>
     <li><a href="{% url 'flights' %}"><strong>Flights:</strong></a> {{ num_flights }}</li>
     <li><a href="{% url 'departures' %}"><strong>Departures:</strong></a> {{ num_departures }}</li>

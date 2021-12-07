@@ -1,0 +1,47 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="container mg-t">
+
+    <h4>User account creation</h4>
+<!--    POST method to avoid putting critical information in the URL (safer)-->
+    {% csrf_token %}
+    <form method="POST" class="form-group" id="SignupForm">
+        {% csrf_token %}
+        <div class="row">
+            <label for="Last_name">Last Name: 
+            {{ form.last_name }}
+        </div>
+        <div class="row">
+            <label for="First_name">First Name: 
+            {{ form.first_name }}
+        </div>
+        <div class="row">
+            <label for="Email">Email adress: 
+            {{ form.email}}
+        </div>
+        <div class="row">
+            <label for="Adress">Adress: 
+            {{ form.adress }}
+        </div>
+        <div class="row">
+            <label for="Password">Password: 
+            {{ form.password1 }}
+        </div>
+        <div class="row">
+            <label for="Passwordconf">Password confirmation: 
+            {{ form.password2 }}
+        </div>
+
+        {% for message in errors.values %}
+            <h2 style="color: red;">
+                {{ message }}
+            </h2>
+        {% endfor %}
+
+        <input type="submit" class="btn btn-primary" value="Sign up"/>
+    </form>
+</div>
+
+
+{% endblock %}

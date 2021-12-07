@@ -1,38 +1,68 @@
 import datetime
+from datetime import date
 from django import forms
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render
 from django.core.mail import send_mail
 
 from Marcair.models import Airport, Flight, Departure, Ticket, Connection, Transaction, Pilot, Employee, CrewMember, Airplane, Client
 
-@login_required
-class Buy_a_ticket_Form(forms.Form):
-    renewal_date = forms.DateField(help_text="Enter a date between now and 4 weeks (default 3).")
-    def clean_renewal_date(self):
-        data = self.cleaned_data['renewal_date']
+###########################################################################################
 
-        #Check date is not in past.
-        if data < datetime.date.today():
-            raise ValidationError(_('Invalid date - renewal in past'))
+now = datetime.datetime.now()
+YEAR_CHOICE = [now.year, now.year + 1]
 
-        #Check date is in range librarian allowed to change (+4 weeks).
-        if data > datetime.date.today() + datetime.timedelta(weeks=4):
-            raise ValidationError(_('Invalid date - renewal more than 4 weeks ahead'))
-
-        # Remember to always return the cleaned data.
-        return data
+class FlightForm(forms.ModelForm):
+    # date_heure_depart = forms.DateTimeField()
+    class Meta:
+        model = Flight
+        fields = (
+            "connection_id",
+            "departure_day",
+        )
+        widgets = {"departure_date": forms.SelectDateWidget(years=YEAR_CHOICE),}
 
 
-class IdentityForm(forms.Form):
-    model = Client
-    first_name = forms.CharField(label='First name', max_length=100)
-    last_name = forms.CharField(label='Last name', max_length=100)
-    adress = forms.CharField(label='Adress', max_length=100)
-    email_adress = forms.EmailField(label='Email')
-    group = forms.MultipleChoiceField(label='Group')
-    def __str__(self):
-        return f'{self.first_name}, {self.last_name},{self.adress},{self.email_adress},{self.group}'
+class ResearchForm(forms.Form):
+     """Form to research a flight"""
+     destination = forms.ModelChoiceField(queryset=Airport.objects.filter(),
+                                       label="Destination")
+     class Meta:
+        """ Link the form to the model Flight and define filters"""
+        model = Flight
+        fields = ("connection","departure_day")
+
+class ReservationForm(forms.Form):
+    """
+    Form to create a reservation
+    Args:
+        last_name: Name of the client 
+        first_name: first name of the client 
+        email_address: email of the client to send the ticket 
+        situation: First Class, Business Class or Economy Class situation souhaitée
+    """
+    FIRST = "F"
+    ECONOMY = "E"
+    BUSINESS = "B"
+
+    SITUATIONS = [
+        (FIRST, "First"),
+        (ECONOMY, "Economy"),
+        (BUSINESS, "Business")
+    ]
+
+    last_name = forms.CharField(max_length=100, disabled=True)
+    first_name = forms.CharField(max_length=100, disabled=True)
+    email_address = forms.EmailField(disabled=True)
+    situation = forms.ChoiceField(required=False, choices=SITUATIONS)
+
+    def __init__(self, Client, *args, **kwargs):
+        """ Surcharge de la méthode init pour définir les champs initiaux du formulaire """
+        super(ReservationForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'].initial = Client.first_name
+        self.fields['last_name'].initial = Client.last_name
+        self.fields['email_address'].initial = Client.email_address

@@ -1,15 +1,26 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>Buy a ticket</h1>
-    <p>available soon...</p>
-    <h3 class="pt-4 pb-2">Choose your Departure </h3>
-    <h3 class="pt-4 pb-2">Choose your Destination </h3>
+  <h4>Buy a ticket</h4>
+    <p>beta version, final version to be deployed soon</p>
+
     <section class="container">
-      <h3 class="pt-4 pb-2">Departure Date</h3>
-      <form>
-          <div class="row form-group">
-              <label for="date" class="col-sm-1 col-form-label">Date</label>
+        <form id=Book>
+            <div class="row mb-3">
+              <label for="inputEmail3" class="col-sm-2 col-form-label">Choose your departure:</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputEmail3">
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <label for="inputPassword3" class="col-sm-2 col-form-label">Choose your destination : </label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputPassword3">
+              </div>
+            </div>
+            <div class="row form-group">
+              <label for="date" class="col-sm-1 col-form-label">Departure Date</label>
               <div class="col-sm-4">
                   <div class="input-group date" id="datepicker">
                       <input type="text" class="form-control">
@@ -20,20 +31,57 @@
                       </span>
                   </div>
               </div>
-          </div>
-      </form>
+            </div>
+            <fieldset class="row mb-3">
+              <legend class="col-form-label col-sm-2 pt-0">Class</legend>
+              <div class="col-sm-10">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
+                  <label class="form-check-label" for="gridRadios1">
+                    Economy class
+                  </label>
+
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
+                  <label class="form-check-label" for="gridRadios2">
+                    Business class
+                  </label>
+
+                </div>
+                <div class="form-check disabled">
+                  <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios3" value="option3" disabled>
+                  <label class="form-check-label" for="gridRadios3">
+                    1st class
+                  </label>
+
+                </div>
+              </div>
+            </fieldset>
+            <div class="row mb-3">
+              <div class="col-sm-10 offset-sm-2">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="gridCheck1">
+                  <label class="form-check-label" for="gridCheck1">
+                    Search for remaining seats in other categories
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {% for message in errors.values %}
+            <h2 style="color: red;">
+                {{ message }}
+            </h2>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
+        
+
+      {% block context %}
+      {% endblock %}
   </section>
-
-  <h1>Renew: {{bookinst.book.title}}</h1>
-  <p>Borrower: {{bookinst.borrower}}</p>
-  <p{% if bookinst.is_overdue %} class="text-danger"{% endif %}>Due date: {{bookinst.due_back}}</p>
-
-<form action="" method="post">
-{% csrf_token %}
-  <table>
-  {{ form }}
-  </table>
-  <input type="submit" value="Submit" />
-</form>
 {% endblock %}
 

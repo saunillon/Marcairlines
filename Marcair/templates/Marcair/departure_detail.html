@@ -5,14 +5,13 @@
 
   <p><strong>Flight associated:</strong> {{ departure.flight_id.connection_id }} </p>
   <p><strong>Remaining seats:</strong> {{ departure.number_of_empty_seat }}</p>
-  <p><strong>Gate:</strong> not specified </p>
+  <p><strong>Gate:</strong> not yet specified </p>
 
 
   <div style="margin-left:20px;margin-top:20px">
     <h4>Workers</h4>
-    <p><strong>Remaining seats:</strong> {{ departure.number_of_empty_seat }}</p>
-    <p><strong>Remaining seats:</strong> {{ departure.number_of_empty_seat }}</p>
-    <p><strong>Remaining seats:</strong> {{ departure.number_of_empty_seat }}</p>
-    <p><strong>Remaining seats:</strong> {{ departure.number_of_empty_seat }}</p>
+    <p><strong>Pilot:</strong> {{ departure.pilot_id }}</p>
+    <p><strong>Copilot:</strong> {{ departure.optionnal_pilot_id }}</p>
+    <p><strong>Crew members:</strong> {{ departure.first_crew_member_id }},{{ departure.second_crew_member_id }}</p>
   </div>
 {% endblock %}
